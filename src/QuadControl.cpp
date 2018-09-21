@@ -69,12 +69,26 @@ VehicleCommand QuadControl::GenerateMotorCommands(float collThrustCmd, V3F momen
   // You'll need the arm length parameter L, and the drag/thrust ratio kappa
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
-
+	 /*
   cmd.desiredThrustsN[0] = mass * 9.81f / 4.f; // front left
   cmd.desiredThrustsN[1] = mass * 9.81f / 4.f; // front right
   cmd.desiredThrustsN[2] = mass * 9.81f / 4.f; // rear left
   cmd.desiredThrustsN[3] = mass * 9.81f / 4.f; // rear right
+  */
+ 
 
+	float l = L / sqrtf(2.f);
+
+	float c_bar = collThrustCmd;
+	float p_bar = momentCmd.x / l;
+	float q_bar = momentCmd.y / l;
+	float r_bar = -momentCmd.z / kappa;
+
+	cmd.desiredThrustsN[0] = (c_bar + p_bar + q_bar + r_bar) / 4.f;
+	cmd.desiredThrustsN[1] = (c_bar - p_bar + q_bar - r_bar) / 4.f;
+	cmd.desiredThrustsN[2] = (c_bar + p_bar - q_bar - r_bar) / 4.f;
+	cmd.desiredThrustsN[3] = (c_bar - p_bar - q_bar + r_bar) / 4.f;
+	
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   return cmd;
@@ -98,8 +112,14 @@ V3F QuadControl::BodyRateControl(V3F pqrCmd, V3F pqr)
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
-  
 
+  V3F I;
+  I.x = Ixx;
+  I.y = Iyy;
+  I.z = Izz;
+
+  momentCmd = I * kpPQR * (pqrCmd - pqr);
+  
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   return momentCmd;
@@ -129,7 +149,22 @@ V3F QuadControl::RollPitchControl(V3F accelCmd, Quaternion<float> attitude, floa
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
+  if (collThrustCmd > 0) {
+	  float u1 = -collThrustCmd / mass;
+	  float b_x_target = CONSTRAIN(accelCmd.x / u1, -maxTiltAngle, maxTiltAngle);
+	  float b_x_err = b_x_target - R(0, 2);
+	  float b_x_p_term = kpBank * b_x_err;
 
+	  float b_y_target = CONSTRAIN(accelCmd.y / u1, -maxTiltAngle, maxTiltAngle);
+	  float b_y_err = b_y_target - R(1, 2);
+	  float b_y_p_term = kpBank * b_y_err;
+	  pqrCmd.x = (R(1, 0) * b_x_p_term - R(0, 0) * b_y_p_term) / R(2, 2);
+	  pqrCmd.y = (R(1, 1) * b_x_p_term - R(0, 1) * b_y_p_term) / R(2, 2);
+  }
+  else {
+	  pqrCmd.x = 0.0;
+	  pqrCmd.y = 0.0;
+  }
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
@@ -160,7 +195,6 @@ float QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, flo
   float thrust = 0;
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
-
 
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
