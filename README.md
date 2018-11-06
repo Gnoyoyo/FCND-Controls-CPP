@@ -105,18 +105,3 @@ Here is the result of the scenarios
 ```PASS: ABS(Quad2.PosFollowErr) was less than 0.250000 for at least 3.000000 seconds```
 
 ![Scenario5 Gif](./misc/gif/scenario5.gif)
-
-## Extra Challenge
-
-## Challenge 1
-
-```result```
-
-![Scenario5 Gif](./misc/gif/scenario6.gif)
-
-
-## Challenge 2
-
-```PASS: ABS(Quad2.PosFollowErr) was less than 0.250000 for at least 3.000000 seconds```
-
-![Scenario5 Gif](./misc/gif/scenario7.gif)
