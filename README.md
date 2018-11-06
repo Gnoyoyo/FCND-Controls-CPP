@@ -54,7 +54,9 @@ As seen below is the implementation of the Yaw control.
 
 ##### The thrust and moments should be converted to the appropriate 4 different desired thrust forces for the moments. Ensure that the dimensions of the drone are properly accounted for when calculating thrust from moments.
 
-As seen below is the implementation of the calculating motor.
+As seen below is the implementation of the calculation of motor commmand.
+
+![Code Image](./misc/code/generate_motor_commands.PNG)
 
 ### Flight Evaluation
 
@@ -104,14 +106,16 @@ Here is the result of the scenarios
 
 ![Scenario5 Gif](./misc/gif/scenario5.gif)
 
-## Scenario 6
+## Extra Challenge
+
+## Challenge 1
 
 ```result```
 
 ![Scenario5 Gif](./misc/gif/scenario6.gif)
 
 
-## Scenario 7
+## Challenge 2
 
 ```PASS: ABS(Quad2.PosFollowErr) was less than 0.250000 for at least 3.000000 seconds```
 
